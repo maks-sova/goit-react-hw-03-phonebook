@@ -1,5 +1,5 @@
 import React from 'react';
-import contacts from './contacts';
+// import contacts from './contacts';
 import ContactList from './ContactList/ContactList';
 import FilterContacts from './FilterContacts/FilterContacts';
 import ContactForm from './ContactForm/ContactForm';
@@ -7,9 +7,23 @@ import { nanoid } from 'nanoid';
 // import css from './Phonebook.module.css';
 export class App extends React.Component {
   state = {
-    contacts: [...contacts],
+    contacts: [],
     filter: '',
   };
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem('my-contacts'));
+    if (contacts?.length) {
+      this.setState({ contacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (prevState.contacts.length !== contacts.length) {
+      localStorage.setItem('my-contacts', JSON.stringify(contacts));
+    }
+  }
+
   removContact = id => {
     this.setState(({ contacts }) => {
       const newContacts = contacts.filter(contact => contact.id !== id);
